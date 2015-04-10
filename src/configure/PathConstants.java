@@ -76,7 +76,11 @@ public class PathConstants {
 
 	//Input files
 	public String HOME_DIR;
-	public String CORPUS_DIR; 
+	public String CORPUS_DIR;
+	public String SOURCE_DIR;
+	public String DUP_DIR;
+	public String POS_DIR;
+	public String NEG_DIR;
 	public String TRAIN_DIR; 
 	public String TEST_DIR;
 	public String FEATURE_DIR;	
@@ -94,6 +98,7 @@ public class PathConstants {
 	public String TITLE_FEATURES;
 	public String NGRAM_FEATURES;
 	public String TITLE_NGRAMS;
+	public String DOC_IDS;
 	
 	//Feature setup
 	public String USE_TEXT_SIZE;
@@ -106,7 +111,7 @@ public class PathConstants {
 	public String USE_ANNOTATION_FEATURE;
 	public String USE_ANNOTATION_TYPE;
 	public String USE_TITLE_FEATURE;
-	
+	public String USE_DOC_ID;
 	
 	//Feature setup - Ngrams
 	public String USE_NGRAM_FEATURE;
@@ -115,6 +120,12 @@ public class PathConstants {
 	public String NGRAM_SIZE;
 	public String USE_WEIGHTED_NGRAM;
 	public String WEIGHT;
+	
+	//Feature filtering
+	public String USE_ODDS_RATIO;
+	public String OR_THRESHOLD;
+	public String USE_IDF;
+	public String IDF_THRESHOLD;
 
 	//Task setup
 	public String EXP_TYPE;	
@@ -139,6 +150,10 @@ public class PathConstants {
 		}
 		HOME_DIR = CONFIG_MAP.get("HOME_DIR");
 		CORPUS_DIR = CONFIG_MAP.get("CORPUS_DIR"); 
+		SOURCE_DIR = CONFIG_MAP.get("SOURCE_DIR");
+		DUP_DIR = CONFIG_MAP.get("DUP_DIR");
+		POS_DIR = CONFIG_MAP.get("POS_DIR");
+		NEG_DIR = CONFIG_MAP.get("NEG_DIR");
 		TRAIN_DIR = CONFIG_MAP.get("TRAIN_DIR"); 
 		TEST_DIR = CONFIG_MAP.get("TEST_DIR");
 		FEATURE_DIR = CONFIG_MAP.get("FEATURE_DIR");		
@@ -155,6 +170,7 @@ public class PathConstants {
 		TITLE_FEATURES = CONFIG_MAP.get("TITLE_FEATURES");
 		NGRAM_FEATURES = CONFIG_MAP.get("NGRAM_FEATURES");
 		TITLE_NGRAMS = CONFIG_MAP.get("TITLE_NGRAMS");
+		DOC_IDS = CONFIG_MAP.get("DOC_IDS");
 		
 		USE_TEXT_SIZE = CONFIG_MAP.get("USE_TEXT_SIZE");
 		USE_JOURNAL_TITLE_FEATURE = CONFIG_MAP.get("USE_JOURNAL_TITLE_FEATURE");	
@@ -165,6 +181,7 @@ public class PathConstants {
 		USE_ANNOTATION_FEATURE = CONFIG_MAP.get("USE_ANNOTATION_FEATURE");
 		USE_ANNOTATION_TYPE = CONFIG_MAP.get("USE_ANNOTATION_TYPE");		
 		USE_TITLE_FEATURE = CONFIG_MAP.get("USE_TITLE_FEATURE");
+		USE_DOC_ID = CONFIG_MAP.get("USE_DOC_ID");
 		
 		USE_NGRAM_FEATURE = CONFIG_MAP.get("USE_NGRAM_FEATURE");
 		USE_TITLE_NGRAMS = CONFIG_MAP.get("USE_TITLE_NGRAMS");
@@ -172,6 +189,11 @@ public class PathConstants {
 		NGRAM_SIZE = CONFIG_MAP.get("NGRAM_SIZE");
 		USE_WEIGHTED_NGRAM = CONFIG_MAP.get("USE_WEIGHTED_NGRAM");
 		WEIGHT = CONFIG_MAP.get("WEIGHT");
+		
+		USE_ODDS_RATIO = CONFIG_MAP.get("USE_ODDS_RATIO");
+		OR_THRESHOLD = CONFIG_MAP.get("OR_THRESHOLD");
+		USE_IDF = CONFIG_MAP.get("USE_IDF");
+		IDF_THRESHOLD = CONFIG_MAP.get("IDF_THRESHOLD");
 				
 		EXP_TYPE = CONFIG_MAP.get("EXP_TYPE");		
 		NB_PARAMS = CONFIG_MAP.get("NB_PARAMS");		

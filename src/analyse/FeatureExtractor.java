@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package analyse;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -38,47 +39,48 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import configure.PathConstants;
+import filter.NaiveFilter;
 
 
 /**
  * This class extracts and parses domain 
  * annotation features from doc instances
  *   
- * @author halmeida
+ * @author Hayda Almeida
+ * @since 2014
+ * 
  */
 
 public class FeatureExtractor extends Extractor{	
 	
 	public FeatureExtractor(){
 				
-		this.id = "<PMID Version=1>";
-		this.endId = "</PMID>";
-		this.endFile = "</PubmedArticleSet>";
-		this.openAbst = "<AbstractText>";
-		this.closeAbst = "</AbstractText>";
-		this.abstractLabel = "<AbstractText ";
-		this.openEC = "<RegistryNumber>EC ";
-		this.closeEC = "</RegistryNumber>";
-		this.classTag = "<TRIAGE>";
-		this.openJournal = "<Title>";
-		this.closeJournal = "</Title>";
-		this.openTitle = "<ArticleTitle>";
-		this.closeTitle = "</ArticleTitle>";		
+		this.id = "PMID";
+		this.openAbst = "AbstractText";
+		this.abstractLabel = "AbstractText ";
+		this.openEC = "RegistryNumber";
+		this.classTag = "TRIAGE";
+		this.openJournal = "Title";
+		this.openTitle = "ArticleTitle";		
 	}
 		
 	
 	public static void main(String[] args) {
 		
 		PathConstants pathVars = new PathConstants();
+		boolean verbose = false;
 		
 		String AnCorpus = pathVars.HOME_DIR + pathVars.CORPUS_DIR +  pathVars.TRAIN_DIR + pathVars.TRAINING_FILE;
-		FeatureExtractor fextrac = new FeatureExtractor();	
+		FeatureExtractor fextrac = new FeatureExtractor();
+		NaiveFilter featFilter = new NaiveFilter();
 				
 		//store all features, type and count
 		HashMap<Map<String,String>,Integer> abstract_count = new HashMap<Map<String,String>,Integer>();
@@ -90,189 +92,142 @@ public class FeatureExtractor extends Extractor{
 		//store title features, type and count
 		HashMap<Map<String,String>, Integer> title_count = new HashMap<Map<String,String>, Integer>();
 		//store title features, whole journal title content and classification
-		HashMap<Map<String,String>,String> title_content = new HashMap<Map<String,String>,String>();
-		
+		HashMap<Map<String,String>,String> title_content = new HashMap<Map<String,String>,String>();		
 		//store title content and EC numbers
 		ArrayList<String> ec_numbers = new ArrayList<String>();
+		
+		//store ID, class and features
+		HashMap<String,String> PMIDs = new HashMap<String,String>();
 				
 		fextrac.initialize();
 		int jTitle = 0;
 				
 		try 
 		{
-			BufferedReader reader = new BufferedReader(new FileReader(AnCorpus));			
-
-			//---------------------------
-			// repeat until all lines of the file are read
-			//---------------------------
 			String line = null;
 			String features = null;
-			// String id = null;			
+			//Loading file
+			File input = new File(AnCorpus);
+			//Jsoup parse
+			Document doc = Jsoup.parse(input, "UTF-8");
 
+			Elements corpus = doc.body().getElementsByTag("pubmedarticleset");
 
-			while((line = reader.readLine()) != null){
+			//Fetching elements
 
-				line = line.replaceAll("\t","");
-				line = line.replace("\"", "");
+			for(Element paper : corpus ){			
 
-				//find paper ID and store it
-				if (line.contains(fextrac.getid())){
-					line = line.replace(fextrac.getid(), "");
-				//	id = line.replace(fextrac.getendId(), "");		
+				//Fetching elements
+				Elements journalTitle = paper.getElementsByTag(fextrac.getOpenJournal());
+				Elements title = paper.getElementsByTag(fextrac.getOpenTitle());
+				Elements abstractC = paper.getElementsByTag(fextrac.getopenAbst());
+				Elements ECnumber = paper.getElementsByTag(fextrac.getOpenEC());
+				Elements classDoc = paper.getElementsByTag(fextrac.getClassTag());				
 
-					//continue reading
-					features = reader.readLine();
-					features = features.replaceAll("\t","");
-										
-					String journal = "";
+				String journal = "";
+				String docID = "";
+				String label = "";
+				ArrayList<String> tempList = new ArrayList<String>();
+				StringBuffer sb = new StringBuffer();
+				
+				//fetching the paper ID - 
+				//for all items in a paper, retrieve only PMIDs 
+				for(Element e : paper.select(fextrac.getid())){
+					//only consider the ID if the parent is medline citation
+					if(e.parentNode().nodeName().contains("medline")){						
+						docID = e.text();
+					}
+				}			
+				//fetch the doc label as well
+				if(classDoc.hasText()){
+					label = classDoc.text();									
+				}
+				
+				PMIDs.put(docID, label);				
 
-					//continue reading until the end of file
-					while(!(features.contentEquals(fextrac.getendFile()))){											
-						
-						//find relevant doc section - Journal title
-						if(features.contains(fextrac.getOpenJournal())){
-							
-							features = features.replace(fextrac.getOpenJournal(),"");
-							features = features.replace(fextrac.getCloseJournal(), "");
-							features = fextrac.removeSpecialChar(features);
-														
-							//separating only the journal title content													
-							journal = fextrac.removeTags(features);
-							//counting # of journal titles					
-							jTitle++;
-							
-							features = reader.readLine();
-							features = features.replaceAll("\t","");								
-						}						
-												
-						//find relevant doc section - Article title
-						if(features.contains(fextrac.getOpenTitle())){
-							
-							features = features.replace(fextrac.getOpenTitle(),"");
-							features = features.replace(fextrac.getCloseTitle(), "");
-							features = fextrac.removeSpecialChar(features);
-							
-							//separating the title by annotations													
-							String title_annotation = features;																				
-							
-							//extracting annotations and inserting them on lists
-							fextrac.annotations(title_annotation, title_count, title_type, pathVars);
-							fextrac.addContent(title_annotation, journal, title_content);							
-							
-							features = reader.readLine();
-							features = features.replaceAll("\t","");							
-						}						
-						
-						if(features.contains(fextrac.getAbstractLabel())){
-							
-							String temp = "";
-							String newAbs = fextrac.getopenAbst();						
-							
-							//handling cases when the tag is already within abstract content
-							if(features.contains("</Abstract>")){
-								temp = temp + fextrac.processAbstract(features);
-							}
-							else{												
-								do{							
-									temp = temp + fextrac.processAbstract(features);								
-									features = reader.readLine();							
-								}while(!(features.contains("</Abstract>")));
-							}							
-							newAbs = newAbs + temp;
-							features = newAbs + fextrac.getcloseAbst();							
-						}
-						
-						//find relevant doc section - Abstract
-						if(features.contains(fextrac.getopenAbst())){
-							
-							features = features.replace(fextrac.getopenAbst(),"");
-							features = features.replace(fextrac.getcloseAbst(), "");
-							features = fextrac.removeSpecialChar(features);
-							
-							//handle lines in which abstract text tag
-							//is separated from the actual text
-							if(features.isEmpty()){
-								features = reader.readLine();
-								features = features.replaceAll("\t","");
-								features = features.replace(fextrac.getopenAbst(),"");
-								features = features.replace(fextrac.getcloseAbst(), "");
-								features = fextrac.removeSpecialChar(features);
-							}																					
-							
-							features = fextrac.removeAbstractTags(features);
-							
-							//gathering abstract annotations
-							String abstrac = features;
-							
-							//extract annotations and insert them on lists
-							fextrac.annotations(abstrac, abstract_count, abstract_type, pathVars);					
+				if(journalTitle.hasText()){
 
-							features = reader.readLine();
-							features = features.replaceAll("\t","");
-							//features = features.replaceAll("\\s+", "");
-						}
-						
-						//identifying EC number
-						if(features.contains(fextrac.getOpenEC())){
-							features = features.replace(fextrac.getOpenEC(), "");
-							features = features.replace(fextrac.getCloseEC(), "");
-							features = fextrac.removeSpecialChar(features);
-							
-							ec_numbers.add(features);
-							
-							features = reader.readLine();
-							features = features.replaceAll("\t","");
-						}
-						
-						//find classification of the document	
-						if(features.contains(fextrac.getClassTag())){	
-														
-							//adding classification to the list of annotations
-							String classif = fextrac.getClassif(features);
-							fextrac.addClass(classif, abstract_type);							
-							fextrac.addClass(classif, title_type);
-							fextrac.addClass(classif, title_content);													
-							
-							features = reader.readLine();
-							features = features.replaceAll("\t","");
-						}
-
-						features = reader.readLine();
-						features = features.replaceAll("\t","");						
-
-					}					
-
+					jTitle++;				
+					journal = journalTitle.toString();
+					journal = fextrac.removeSpecialChar(journal);				
+					journal = fextrac.removeTags(journal);									
 				}				
 
+				String title_annotation = "";
+				if(title.hasText()){
+					title_annotation = title.toString();
+					title_annotation = fextrac.removeSpecialChar(title_annotation);
+
+					tempList.addAll(fextrac.annotations(title_annotation, title_count, title_type, featFilter, pathVars));
+					fextrac.addContent(title_annotation, journal, title_content, featFilter);					
+				}
+
+				String abstrac = "";
+				if(abstractC.hasText()){
+					abstrac = abstractC.toString();
+					abstrac = fextrac.removeSpecialChar(abstrac);
+					abstrac = fextrac.removeAbstractTags(abstrac);
+
+					tempList.addAll(fextrac.annotations(abstrac, abstract_count, abstract_type, featFilter, pathVars));				
+				}		
+
+				String ecnum = "";
+				if(ECnumber.hasText()){				
+					for(Element number : ECnumber){						
+						ecnum = number.toString();
+						if(ecnum.contains("EC")){
+							ecnum = fextrac.removeSpecialChar(ecnum);
+							ecnum = fextrac.removeTags(ecnum);
+							ec_numbers.add(features);
+						}
+					}				
+				}			
+
+				String triage = "";
+				if(classDoc.hasText()){
+					triage = classDoc.toString();
+					triage = fextrac.removeSpecialChar(triage);
+					triage = fextrac.removeTags(triage);
+
+					fextrac.addClass(triage, abstract_type);							
+					fextrac.addClass(triage, title_type);
+					fextrac.addClass(triage, title_content);
+				}
+				
+//				for(int i = 0; i < tempList.size(); i++){
+//					sb.append(tempList.get(i) + "-");					
+//				}
+//				
+//				PMIDs.put(docIDLabel, sb.toString());
 			}
-
-			reader.close();
-
+			
 		}
+		
 		catch (FileNotFoundException e) {
 			e.printStackTrace();			
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
+		}		
+		
+		if(verbose){
+			//print list of extracted features
+			System.out.println("\n===========TITLE==ANNOTATIONS=============");
+			fextrac.displayList(title_count);		
+			fextrac.displayList(title_type);
+			fextrac.displayList(title_content);
+			System.out.println("\n========ABSTRACT==ANNOTATIONS=============");
+			fextrac.displayList(abstract_count);		
+			fextrac.displayList(abstract_type);
 		}
 		
-		
-		//Use for sample output
-		//System.out.println("\n===========TITLE==ANNOTATIONS=============");
-		//fextrac.displayList(title_count);		
-		//fextrac.displayList(title_type);
-		//fextrac.displayList(title_content);
-		//System.out.println("\n========ABSTRACT==ANNOTATIONS=============");
-		//fextrac.displayList(abstract_count);		
-		//fextrac.displayList(abstract_type);		
-		
-		//Before exporting, take into account the 
-		//occurence of all extracted features 
-		fextrac.considerOccurence(abstract_count, pathVars);
-		fextrac.considerOccurence(title_count, pathVars);
-		
-		
-		System.out.println("\n===========FEATURE==EXPORT===============");			
+		//filter features by occurence
+		featFilter.considerAnnotationOccurence(abstract_count, pathVars);
+		featFilter.considerAnnotationOccurence(title_count, pathVars);
+				
+		System.out.println("\n===========FEATURE==EXPORT===============");
+		fextrac.exportFile(pathVars.HOME_DIR + pathVars.FEATURE_DIR + pathVars.DOC_IDS, PMIDs);
+		System.out.println("..."+ PMIDs.size()+" document IDs listed.");
 		fextrac.exportList(pathVars.HOME_DIR + pathVars.FEATURE_DIR + pathVars.ECNUM_FEATURES, ec_numbers);
 		System.out.println("..."+ ec_numbers.size()+" EC numbers saved.");				
 		fextrac.exportFile(pathVars.HOME_DIR + pathVars.FEATURE_DIR + pathVars.ANNOTATION_FEATURES, abstract_count);
@@ -319,35 +274,14 @@ public class FeatureExtractor extends Extractor{
 		while(it.hasNext()){		
 			Map<String,String> str = it.next();
 								
-			if(list.get(str).contains("positive") || list.get(str).contains("negative")){
+			if(list.get(str).contains(element)){
+			//if(list.get(str).contains("positive") || list.get(str).contains("negative")){
 					
 			}
 			else list.put(str, element);
 		}
-	}
-	
-	
-	/**
-	 * Removes from feature list all features with 
-	 * frequency not statistically relevant (2 or less)
-	 * @param list to be cleaned
-	 */	
-	private void considerOccurence(HashMap<Map<String,String>,Integer> list, PathConstants vars){
-		//going over the list of annotations and removing the
-		//features with occurance lower than specified.
-		
-		Iterator<Map<String, String>> iterator = list.keySet().iterator();
-							
-		while(iterator.hasNext()){
-			Map<String, String> key = iterator.next();
-			int valor = list.get(key).intValue();			
-			
-			if(valor < Integer.parseInt(vars.FEATURE_MIN_FREQ)){
-				iterator.remove();				
-			}
-		}		
 	}	
-	
+
 	
 	/**
 	 * Extract the annotations from a determined section
@@ -357,11 +291,11 @@ public class FeatureExtractor extends Extractor{
 	 * @param count list that holds annotation, its type and its count
 	 * @param type list that holds annotation, its type and its classification
 	 */	
-	private void annotations(String annot, HashMap<Map<String, String>, Integer> count, HashMap<Map<String,String>,String> type, PathConstants pathVars) {		
+	private ArrayList<String> annotations(String annot, HashMap<Map<String, String>, Integer> count, HashMap<Map<String,String>,String> type, NaiveFilter filter, PathConstants pathVars) {		
 		HashMap<String,String> features = loadAnnotationEntities();
 		PathConstants pathVar = new PathConstants(); 
 		NgramExtractor nextrac = new NgramExtractor();
-		ArrayList<String> content = new ArrayList<String>();
+		ArrayList<String> content = new ArrayList<String>();		
 
 		//parsing the not edited text into HTML using Jsoup
 		Document doc = Jsoup.parseBodyFragment(annot);
@@ -394,7 +328,7 @@ public class FeatureExtractor extends Extractor{
 							//if child is sentence (sentence inside of sentence),  
 							//then add annotations as ngrams on this
 							if(features.get(child.nodeName()).contains("sentence")) {
-								content.addAll(nextrac.nGrams(child.text(), pathVar));
+								content.addAll(nextrac.nGrams(child.text(), filter, pathVar));								
 								insertAnnotation(content, an.nodeName(), count, type, pathVars);
 							}
 							//adding annotations on sentence as they are - no ngrams on this
@@ -409,7 +343,7 @@ public class FeatureExtractor extends Extractor{
 						tempAnnot.children().remove();
 
 						//splitting content in ngrams to whats left on the sentence
-						content.addAll(nextrac.nGrams(tempAnnot.text(), pathVar));
+						content.addAll(nextrac.nGrams(tempAnnot.text(), filter, pathVar));
 						insertAnnotation(content, an.nodeName(), count, type, pathVars);
 					}			
 
@@ -422,6 +356,7 @@ public class FeatureExtractor extends Extractor{
 			}
 
 		}
+		return content;
 
 	}	
 	
@@ -479,7 +414,7 @@ public class FeatureExtractor extends Extractor{
 	 * @param list features used
 	 * 
 	 */	
-	private void addContent(String annot, String wContent, HashMap<Map<String,String>,String> list) {
+	private void addContent(String annot, String wContent, HashMap<Map<String,String>,String> list, NaiveFilter filter) {
 
 		HashMap<String,String> features = loadAnnotationEntities();
 		ArrayList<String> content = new ArrayList<String>();
@@ -507,7 +442,7 @@ public class FeatureExtractor extends Extractor{
 				//grab annotation content								
 				if(an_level.contains("sentence"))
 					//splitting in ngrams for sentence level annotations
-					content = nextrac.nGrams(an.text(), pathVar);
+					content = nextrac.nGrams(an.text(), filter, pathVar);
 				else 
 					//keeping original annotation for other cases
 					content.add(an.text());

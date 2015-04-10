@@ -30,171 +30,138 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package analyse;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import configure.PathConstants;
+import filter.NaiveFilter;
 
 /**
  * This class extracts and parses n-grams
- * from doc instances.
+ * from XML doc instances.
  * 
- * @author halmeida
+ * @author Hayda Almeida
+ * @since 2014
+ * 
  */
 
 public class NgramExtractor extends Extractor{
 		
 	public NgramExtractor(){
-		this.id = "<PMID Version=1>";
-		this.endId = "</PMID>";
-		this.endFile = "</PubmedArticleSet>";
-		this.openAbst = "<AbstractText>";
-		this.closeAbst = "</AbstractText>";
-		this.abstractLabel = "<AbstractText ";
-		this.classTag = "<TRIAGE>";
-		this.openTitle = "<ArticleTitle>";
-		this.closeTitle = "</ArticleTitle>";
+		
+		//defining relevant paper text fields
+		this.id = "PMID";
+		this.openJournal = "Title";
+		this.openAbst = "AbstractText";		
+		this.openEC = "RegistryNumber";
+		this.classTag = "TRIAGE";
+		this.openTitle = "ArticleTitle";		
 	}	
 	
-	static String certainty = "?"; //very relevant, relevant, fairly relevant
-	
-	
+		
 	public static void main(String[] args) {
 		
 		PathConstants pathVars = new PathConstants();
+		boolean verbose = false;
 		
 		String AnCorpus = pathVars.HOME_DIR + pathVars.CORPUS_DIR + pathVars.TRAIN_DIR +pathVars.TRAINING_FILE;
 		NgramExtractor nextrac = new NgramExtractor();
+		NaiveFilter featFilter = new NaiveFilter();
+		
 		//store abstract ngrams and its count
 		HashMap<String,Integer> ngram_count = new HashMap<String,Integer>();
-		//store abstract ngrams, count and "relevance(TBD)"
-		HashMap<Map<String,String>,Integer> ngrams  = new HashMap<Map<String,String>,Integer>();
+		//store abstract ngrams and doc ID
+		HashMap<String,String> ngram_ID  = new HashMap<String,String>();
 		//store title ngrams and its count
 		HashMap<String,Integer> ngram_title_count = new HashMap<String,Integer>();
 		//store title ngrams, count and "relevance(TBD)"
 		HashMap<Map<String,String>,Integer> ngram_title = new HashMap<Map<String,String>,Integer>();
-		
+		//store ID and label of documents
+		HashMap<String,String> PMIDs = new HashMap<String,String>();
+				
 		nextrac.initialize();		
 		
 		try 
-		{			
-			BufferedReader reader = new BufferedReader(new FileReader(AnCorpus));	       
+		{		
+			
+			//Loading file
+			File input = new File(AnCorpus);
+			//Jsoup parse
+			Document doc = Jsoup.parse(input, "UTF-8");
 
-			//---------------------------
-			// repeat until all lines 
-			// of the file are read
-			//---------------------------
-			String line = null;
-			String features = null;
-			String id = null;
-
-
-			while((line = reader.readLine()) != null){
-
-				line = line.replaceAll("\t","");
-				line = line.replace("\"", "");
-
-				//find paper ID and store it
-				if (line.contains(nextrac.getid())){
-					line = line.replace(nextrac.getid(), "");
-					id = line.replace(nextrac.getendId(), "");
-
-					//keep reading the file
-					features = reader.readLine();
-					features = features.replaceAll("\t","");	       		
-
-					String tit_content = "";
-
-					//continue reading until the end of file
-					while(!(features.contentEquals(nextrac.getendFile()))){
+			Elements corpus = doc.body().getElementsByTag("pubmedarticleset");
 						
-						String abstrac = "";
+			//Fetching elements
+			
+			for(Element paper : corpus ){			
 
-						//find relevant doc section - Article title
-						if(features.contains(nextrac.getOpenTitle())){
+				Elements journalTitle = paper.getElementsByTag(nextrac.getOpenJournal());
+				Elements title = paper.getElementsByTag(nextrac.getOpenTitle());
+				Elements abstractC = paper.getElementsByTag(nextrac.getopenAbst());
+				Elements ECnumber = paper.getElementsByTag(nextrac.getOpenEC());
+				Elements classDoc = paper.getElementsByTag(nextrac.getClassTag());		
 
-							//cleaning title content
-							features = features.replace(nextrac.getOpenTitle(),"");
-							features = features.replace(nextrac.getCloseTitle(), "");
-							features = nextrac.removeSpecialChar(features);
-							tit_content = nextrac.removeTags(features);
+				String journal = "";
+				String docID = "";
+				String label = "";
+				int jTitle = 0;
 
-							//extract n-grams from section
-							ArrayList<String> title_c = nextrac.nGrams(tit_content, pathVars);
-							nextrac.addNGram(title_c, ngram_title_count,ngram_title, pathVars);
-
-							features = reader.readLine();
-							features = features.replaceAll("\t","");
-						}
-						
-
-						if(features.contains(nextrac.getAbstractLabel())){
-							
-							String temp = "";
-							String newAbs = nextrac.getopenAbst();
-							
-							if(features.contains("</Abstract>")){
-								temp = temp + nextrac.processAbstract(features);
-							}
-							else{						
-								do{							
-									temp = temp + nextrac.processAbstract(features);								
-									features = reader.readLine();							
-								}while(!(features.contains("</Abstract>")));
-							}
-								
-							newAbs = newAbs + temp;
-							features = newAbs + nextrac.getcloseAbst();							
-						}
-
-						//find relevant paper section
-						if(features.contains(nextrac.getopenAbst())){							
-							
-							features = features.replace(nextrac.getopenAbst(),"");
-							features = features.replace(nextrac.getcloseAbst(), "");
-							features = features.replace("-", " ");
-							features = nextrac.removeSpecialChar(features);
-							
-							//handle lines in which abstract text tag
-							//is separated from the actual text
-							if(features.isEmpty()){
-								features = reader.readLine();
-								features = features.replaceAll("\t","");
-								features = features.replace(nextrac.getopenAbst(),"");
-								features = features.replace(nextrac.getcloseAbst(), "");
-								features = features.replace("-", " ");
-								features = nextrac.removeSpecialChar(features);
-							}					
-							
-							//features = nextrac.removeSpecialChar(features);
-							abstrac = nextrac.removeTags(features);
-							abstrac = nextrac.removeAbstractTags(abstrac);
-							//extract n-grams from section
-							ArrayList<String> abstract_c = nextrac.nGrams(abstrac, pathVars);
-							nextrac.addNGram(abstract_c, ngram_count, ngrams, pathVars);												
-
-							//keep reading file
-							features = reader.readLine();
-							features = features.replaceAll("\t","");
-							//features = features.replaceAll("\\s+", "");
-						}
-						
-						features = reader.readLine();
-						features = features.replaceAll("\t","");
-						//features = features.replaceAll("\\s+", "");
-					}			
+				//fetching the paper ID - 
+				//for all items in a paper, retrieve only PMIDs 
+				for(Element e : paper.select(nextrac.getid())){
+					//only consider the ID if the parent is medline citation
+					if(e.parentNode().nodeName().contains("medline")){						
+						docID = e.text();
+					}
+				}			
+				//fetch the doc label as well
+				if(classDoc.hasText()){
+					label = classDoc.text();									
 				}
-			}			
 
-			reader.close();      				
+				PMIDs.put(docID, label);
 
+				//Extracting the Journal Title
+				if(journalTitle.hasText()){
+					jTitle++;				
+					journal = journalTitle.toString();
+					journal = nextrac.removeSpecialChar(journal);				
+					journal = nextrac.removeTags(journal);									
+				}
+
+				String tit_content = "";
+				//Extracting the Paper Title
+				if(title.hasText()){
+					tit_content = title.toString();
+					tit_content = nextrac.removeSpecialChar(tit_content);
+					tit_content = nextrac.removeTags(tit_content);
+
+					ArrayList<String> title_c = nextrac.nGrams(tit_content, featFilter, pathVars);
+					nextrac.addNGram(title_c, ngram_title_count, pathVars);		
+				}
+
+				String abstrac = "";
+				//Extracting the Paper abstract
+				if(abstractC.hasText()){
+					abstrac = abstractC.toString();
+					abstrac = nextrac.removeTags(abstrac);
+					abstrac = nextrac.removeSpecialChar(abstrac);				
+					abstrac = nextrac.removeAbstractTags(abstrac);
+
+					ArrayList<String> abstract_c = nextrac.nGrams(abstrac, featFilter, pathVars);
+					nextrac.addNGram(abstract_c, ngram_count, pathVars);			
+				}
+			}
 
 		}catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -202,19 +169,23 @@ public class NgramExtractor extends Extractor{
             e.printStackTrace();
         } 
         
-		//print list of extracted n-grams
-		//System.out.println("\n========ABSTRACT==NGRAMS=============");
-		//nextrac.displayList(ngram_count);
-		//nextrac.displayList(ngram_title);
-		//System.out.println("\n===========TITLE==NGRAMS=============");
-		//nextrac.displayList(ngram_title_count);
+		if(verbose){
+			//print list of extracted n-grams
+			nextrac.displayList(PMIDs);
+			System.out.println("\n========ABSTRACT==NGRAMS=============");
+			nextrac.displayList(ngram_count);
+			nextrac.displayList(ngram_title);
+			System.out.println("\n===========TITLE==NGRAMS=============");
+			nextrac.displayList(ngram_title_count);
+		}	
 		
+		//filter features by occurence			
+		featFilter.considerNgramOccurence(ngram_count, pathVars);
+		featFilter.considerNgramOccurence(ngram_title_count, pathVars);		
 		
-		nextrac.considerOccurance(ngram_count, pathVars);
-		nextrac.considerOccurance(ngram_title_count, pathVars);
-		
-		
-		System.out.println("\n===========NGRAMS==EXPORT===============\n");		
+		System.out.println("\n===========NGRAMS==EXPORT===============\n");
+		nextrac.exportFile(pathVars.HOME_DIR + pathVars.FEATURE_DIR + pathVars.DOC_IDS, PMIDs);
+		System.out.println("..."+ PMIDs.size()+" document IDs listed.");
 		nextrac.exportFile(pathVars.HOME_DIR + pathVars.FEATURE_DIR + pathVars.NGRAM_FEATURES, ngram_count);
 		System.out.println("..."+ ngram_count.size()+" unique Abstract ngrams saved.");
 		nextrac.exportFile(pathVars.HOME_DIR + pathVars.FEATURE_DIR + pathVars.TITLE_NGRAMS, ngram_title_count);
@@ -223,80 +194,64 @@ public class NgramExtractor extends Extractor{
                
 	}
 	
-	
+
 	/**
-	 * Removes from feature list all features with 
-	 * frequency not statistically relevant (2 or less)
-	 * @param list to be cleaned
+	 * Inserts ngrams into list of features 
+	 * with a mapping for ngram count  
+	 * @param str relation of ngrams extracted
+	 * @param list_count mapping for ngram counts
+	 * @param pathVars 
 	 */
 	
-	private void considerOccurance(HashMap<String,Integer> list, PathConstants vars){
-		//going over the list of annotations and removing the
-		//statistically not significant features - frequency less than 2
-
-		Iterator <Integer> iterator = list.values().iterator();
-
-		while(iterator.hasNext()){
-			Integer key = iterator.next();
-
-			if(key < Integer.parseInt(vars.FEATURE_MIN_FREQ)){
-				iterator.remove();				
-			}
-		}
-	}
-	
-	private void addNGram(ArrayList<String> str, HashMap<String,Integer> list_count, HashMap<Map<String,String>,Integer> list, PathConstants pathVars){
+	private void addNGram(ArrayList<String> str, HashMap<String,Integer> list_count, PathConstants pathVars){
 		
+		//iterating over ngram list
 		for(int i = 0; i < str.size(); i++){
 			String currentNGram = str.get(i);
 			
+			//checking existence of current ngram on list mapping
 			if(list_count.containsKey(currentNGram)){
+				//retrieve the amount of current ngrams on mapping
 				int count = list_count.get(currentNGram);
-				list_count.put(currentNGram, count+1);
-
-				/*if(list.containsKey(currentNGram)){		
-					int cnt = list.get(currentNGram).get(certainty);
-					list.get(currentNGram).put(certainty, cnt+1);
-				}
-				else{
-					list.get(currentNGram).put(certainty, 1);
-				}*/
+				//insert the updated count of ngrams
+				list_count.put(currentNGram, count+1);			
 			}
 			else {
+				//insert ngram on mapping list 
 				if(currentNGram.length() >= Integer.parseInt(pathVars.FEATURE_MIN_LENGTH)){
 					list_count.put(currentNGram, 1);
-					
-				/*	list.put(currentNGram, new HashMap<String, Integer>());
-					list.get(currentNGram).put(certainty, 1);*/
 				}
 			}
 		}
 	}
 	
 	/**
-	 * Extracts n-grams from the content field
-	 * and populates mapping with n-gram +count
-	 * @param str
-	 * @param id
-	 * @param gram
-	 */
-	
-	public ArrayList<String> nGrams(String str, PathConstants pathVar){
+	 * Extracts n-grams from a given content field
+	 * 
+	 * @param str text to extract ngrams
+	 * @return list of extracted grams
+	 */	
+	public ArrayList<String> nGrams(String str, NaiveFilter filter, PathConstants pathVar){
 
-		//cleaning further chars on sentence		
+		//removing ASCII special characters		
 		str = str.replace("/", "");
-		str = str.replace("\\", "");		
-		str = str.replace(" ", "-");
-		//Tokenize the sentence
+		str = str.replace("\\", "");
+		//str = str.replace("\n", " ");
+		str = str.replaceAll("\\s+"," ");
+		str = str.replace(" ", "-");		
+		
+		//Tokenizing the sentence
 		String[] words = StringUtils.split(str,"-"); 
 		ArrayList<String> ngramList = new ArrayList<String>();
 
 		int ngram =Integer.parseInt(pathVar.NGRAM_SIZE);
 
+		//Stop-words removal 
 		if(Boolean.valueOf(pathVar.NGRAM_STOP)){
-			words = StringUtils.split(removeStopList(words, pathVar)," ");
-		}		
-
+			words = StringUtils.split(filter.removeStopList(words, pathVar)," ");
+		}	
+		
+		//extracting ngrams according to gram size (1, 2, 3)
 		for(int i=0; i < words.length - (ngram - 1); i++){
 			switch(pathVar.NGRAM_SIZE){
 			case "1":
@@ -314,94 +269,58 @@ public class NgramExtractor extends Extractor{
 		return ngramList;
 	}
 	
-	/**
-	 * Removes the stopwords from ngrams list
-	 * 
-	 * @param str list of ngrams
-	 * @param pathVar constants from 
-	 * @return
-	 */
+//	/**
+//	 * Removes stopwords from ngrams list
+//	 * 
+//	 * @param str list of ngrams
+//	 * @param constants 
+//	 * @return cleaned list of ngrams
+//	 */	
+//	public String removeStopList(String[] str, PathConstants pathVar){
+//		
+//		//stop-words file name
+//		String pathStop = "stopList.txt";
+//		String[] stop = null;
+//		StringBuilder cleaned = new StringBuilder();
+//		
+//		try{
+//			
+//			BufferedReader reader = new BufferedReader(new FileReader(pathStop));
+//			
+//			String line = null;	
+//			//loading stop-words list
+//			while((line = reader.readLine()) != null){
+//				stop = StringUtils.split(line,",");
+//				line = reader.readLine();
+//			}
+//			
+//			reader.close();
+//			
+//		}catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } 		
+//		
+//		//iteraing over text to be cleaned
+//		for(int i = 0; i < str.length; i++){
+//			//iterating over stop-words list
+//			for(int j = 0; j < stop.length; j++){
+//				
+//				//when stop-word is encountered, replace it
+//				if(str[i].equalsIgnoreCase(stop[j])){
+//					str[i] = str[i].replace(str[i],"*");					
+//				}				
+//			}
+//			//retrieve the text without stop-words replacements
+//			if(!(str[i].contentEquals("*"))){
+//				cleaned.append(str[i]).append(" ");				
+//			}
+//		}		
+//		return cleaned.toString().replace("  ", " ");
+//	}
 	
-	public String removeStopList(String[] str, PathConstants pathVar){
 		
-		String pathStop = "stopList.txt";
-		String[] stop = null;
-		StringBuilder cleaned = new StringBuilder();
-		
-		try{
-			
-			BufferedReader reader = new BufferedReader(new FileReader(pathStop));
-			
-			String line = null;	
-			
-			while((line = reader.readLine()) != null){
-				stop = StringUtils.split(line,",");
-				line = reader.readLine();
-			}
-			
-			reader.close();
-			
-		}catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } 		
-		
-		for(int i = 0; i < str.length; i++){
-			for(int j = 0; j < stop.length; j++){
-				
-				if(str[i].equalsIgnoreCase(stop[j])){
-					str[i] = str[i].replace(str[i],"*");					
-				}				
-			}
-			if(!(str[i].contentEquals("*"))){
-				cleaned.append(str[i]).append(" ");				
-			}
-		}		
-		return cleaned.toString().replace("  ", " ");
-	}
-	
-	/**
-	 * Evaluates the level of certainty... 
-	 * TBD!!!
-	 * @param list
-	 * @return
-	 */
-	
-	public String getCertainty(HashMap<String,Map<String,Integer>> list){
-		
-		ArrayList<Object> gramsAr = new ArrayList<Object>(list.entrySet());
-		//String certainty;
-
-		Iterator<?> itr = gramsAr.iterator();
-		while(itr.hasNext()){
-			String str = itr.next().toString();
-			String[] splitted = StringUtils.split(str,"=");
-
-			int relevance = 0;
-			int count = 0;
-
-
-			try{
-				count = list.get(splitted[0]).get(certainty);
-			} catch(Exception e){
-				e.printStackTrace();
-			}
-
-			//relevance = count * getWeight();
-
-			if(relevance == 1)			
-				list.get(splitted[0]).put("fairly relevant", list.get(splitted[0]).get(certainty));							
-			else if (relevance == 2)
-				list.get(splitted[0]).put("relevant", list.get(splitted[0]).get(certainty));
-			else
-				list.get(splitted[0]).put("very relevant", list.get(splitted[0]).get(certainty));
-
-		}
-		
-		return certainty;		
-	}
-	
 	/**
 	 * Displays the keys and values of the
 	 * maps created with n-grams and counts.
@@ -416,27 +335,6 @@ public class NgramExtractor extends Extractor{
 		System.out.println("\n=======================================\n");
 	}
 	
-	
-	/**
-	 * Accessor and mutator methods for the export
-	 * string with list values - so vector class
-	 * can access its content.
-	 * @return string with list of values.
-	 */
-	/*public static String getNgramCount() {
-		//ngramCount = exportContent(ngram_count);
-		return ngramCount;	
-	}
-	public void setNgramCount(String ngramCount) {
-		this.ngramCount = ngramCount;
-	}
-	public static String getNgram() {
-		//ngram = exportContent(ngrams);
-		return ngram;
-	}
-	public void setNgram(String ngram) {
-		this.ngram = ngram;
-	}	*/
-	
+		
 	
 }

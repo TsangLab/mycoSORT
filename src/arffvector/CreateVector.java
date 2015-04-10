@@ -54,6 +54,8 @@ import configure.PathConstants;
  * generated corpus to create a feature vector
  * (a matrix representation of the corpus) 
  * 
+ * @author Hayda Almeida, Marie-Jean Meurs
+ * @since 2014
  * 
  */
 public class CreateVector {	
@@ -64,7 +66,8 @@ public class CreateVector {
 	ArrayList<String> ecnumbers = new ArrayList<String>();
 	ArrayList<String> titleGrams = new ArrayList<String>();
 	ArrayList<String> titleAnnot = new ArrayList<String>();
-	ArrayList<String> nGrams = new ArrayList<String>();	
+	ArrayList<String> nGrams = new ArrayList<String>();
+	ArrayList<String> docID = new ArrayList<String>();
 		
 	PathConstants pathVars = null;
 	
@@ -79,7 +82,7 @@ public class CreateVector {
 	
 	public CreateVector(PathConstants extVars) {
 		
-		pathVars = extVars;
+		pathVars = extVars;		
 		
 		String pathJournalT = pathVars.HOME_DIR + pathVars.FEATURE_DIR + pathVars.JOURNAL_TITLE_FEATURES;
 		try{
@@ -395,19 +398,25 @@ public class CreateVector {
 		
 		switch(exp){
 			case 0: 
-				headerArff.append("% Weka training file - mycoCLAP triage - CSFG 2014\n\n");
+				headerArff.append("% Weka training file - mycoCLAP triage - CSFG 2015\n\n");
 			break;			
 			case 1: 
-				headerArff.append("% Weka test file - mycoCLAP triage - CSFG 2014\n\n");
+				headerArff.append("% Weka test file - mycoCLAP triage - CSFG 2015\n\n");
 			break;
 		}		
 		
 		headerArff.append("@RELATION triage\n");
 		
-		if (Boolean.valueOf(pathVars.USE_TEXT_SIZE)){
+		if(Boolean.valueOf(pathVars.USE_TEXT_SIZE)){
 			// writing the list of text sizes
 			headerArff.append("@ATTRIBUTE sizeoftitle \tREAL \t\t%size of title\n");
 			headerArff.append("@ATTRIBUTE sizeoftext \tREAL \t\t%size of text\n");			
+		}
+		
+		if(Boolean.valueOf(pathVars.USE_DOC_ID)){
+			//writing the docIDs
+			headerArff.append("@ATTRIBUTE docID \tREAL \t\t%PMID of paper\n");
+						
 		}
 		
 		if(Boolean.valueOf(pathVars.USE_JOURNAL_TITLE_FEATURE)){
@@ -532,10 +541,11 @@ public class CreateVector {
 	 * @return String holding counts for all features found in a document
 	 */
 	
-	public String getArffLine(String jTitle, String title, String text, String ecnum, String classTriage, int exp){
+	public String getArffLine(String paperID, String jTitle, String title, String text, String ecnum, String classTriage, int exp){
 		//String vectorArff = "";
 		StringBuilder vectorArff = new StringBuilder();
 				
+		paperID = removeSpecialChar(paperID.toLowerCase());
 		text = removeSpecialChar(text.toLowerCase());
 		title = removeSpecialChar(title.toLowerCase());
 		jTitle = removeSpecialChar(jTitle.toLowerCase());
@@ -560,6 +570,17 @@ public class CreateVector {
 			}
 			
 			vectorArff.append(titlesize).append(",").append(abstractsize).append(",");			
+		}
+		
+		//fill ID of documents
+		if(Boolean.valueOf(pathVars.USE_DOC_ID)){
+
+				if(paperID.length()>0){					
+					vectorArff.append(paperID).append(",");
+				}
+				else{
+					vectorArff.append("0,");
+				}			
 		}
 		
 		//fill values of journal titles

@@ -51,7 +51,7 @@ public class Extractor {
 	
 	//String pathFile;
 	String id;
-	String endId;
+	protected String endId;
 	String openFile;	
 	String endFile;
 	String openAbst;
@@ -95,7 +95,8 @@ public class Extractor {
 		str = str.replace(")", "");
 		str = str.replace("(", "");
 		str = str.replace("\t\t", "\t");
-		str = str.replace("-", "");
+		//losing ngrams because of hifen between names 
+		str = str.replace("-", " ");
 		str = str.replace("  ", "");
 		
 		return str;
@@ -154,15 +155,15 @@ public class Extractor {
 		//this order of removing tags matters to 
 		//exclude the first tag from the abstracts.
 		
-		str = str.replace("<AbstractText>", "");
-		str = str.replace("<AbstractText", "");
-		str = str.replace("<CopyrightInformation>", "");
-		str = str.replace("</CopyrightInformation>", "");
-		str = str.replace("Copyright", "");		
-		str = str.replace("</AbstractText>", "");
-		str = str.replace("<Abstract>", "");
-		str = str.replace("</Abstract>", "");
-		str = str.replace("<AbstractText.*?>", "");		
+		str = str.replace("<abstracttext>", "");
+		str = str.replace("<abstracttext", "");
+		str = str.replace("<copyrightinformation>", "");
+		str = str.replace("</copyrightinformation>", "");
+		str = str.replace("copyright", "");		
+		str = str.replace("</abstractText>", "");
+		str = str.replace("<abstract>", "");
+		str = str.replace("</abstract>", "");
+		str = str.replace("<abstracttext.*?>", "");	
 		
 		return str;
 	}

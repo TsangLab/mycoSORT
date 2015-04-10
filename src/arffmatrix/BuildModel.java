@@ -54,6 +54,9 @@ import configure.PathConstants;
  * This class reads the corpus instances and uses
  * the CreateVector class to generate a model file (ARFF) *  
  *
+ * @author Hayda Almeida, Marie-Jean Meurs
+ * @since 2014
+ *
  */
 
 public class BuildModel {
@@ -91,8 +94,7 @@ public class BuildModel {
 			//by default
 			String sortarffFileName = pathVars.HOME_DIR + pathVars.OUTPUT_MODEL + arffFileName; // default
 			
-			// create file 
-			//FileWriter fstream = new FileWriter(sortarffFileName);
+			// create file			
 			BufferedWriter out = new BufferedWriter(new FileWriter(sortarffFileName));
 			 
 			// load ARFF header and write it
@@ -254,7 +256,7 @@ public class BuildModel {
 	        		System.out.println("Abstract : " + abstracttext.toString() + "\n\n");
 
 	        		// end of if: collect data and write ARFF
-	        		String Arffline = vectorgenerator.getArffLine(
+	        		String Arffline = vectorgenerator.getArffLine(pmid,
 	        				journaltitle, 
 	        				title, 
 	        				abstracttext,

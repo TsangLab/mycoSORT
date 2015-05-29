@@ -1,0 +1,8 @@
+# Project source #
+###################
+*.project
+*.classpath
+
+# Package Files #
+#################
+*.jar

@@ -1,0 +1,38 @@
+% Weka training file - HIV triage - 2015
+
+@RELATION triage
+@ATTRIBUTE docID 	REAL 		%PMID of paper
+@ATTRIBUTE Ngram0trees	REAL 		%trees
+@ATTRIBUTE Ngram1model	REAL 		%model
+@ATTRIBUTE Ngram2triage	REAL 		%triage
+@ATTRIBUTE Ngram3genes	REAL 		%genes
+@ATTRIBUTE Ngram4sampling	REAL 		%sampling
+@ATTRIBUTE Ngram5classification	REAL 		%classification
+@ATTRIBUTE Ngram6processing	REAL 		%processing
+@ATTRIBUTE Ngram7fungal	REAL 		%fungal
+@ATTRIBUTE Ngram8enzymes	REAL 		%enzymes
+@ATTRIBUTE Ngram9manual	REAL 		%manual
+@ATTRIBUTE Ngram10literature	REAL 		%literature
+@ATTRIBUTE Ngram11annotation	REAL 		%annotation
+@ATTRIBUTE Ngram12mycoclapfungalgenomicsca	REAL 		%mycoclapfungalgenomicsca
+@ATTRIBUTE Ngram13machine	REAL 		%machine
+@ATTRIBUTE Ngram14first	REAL 		%first
+@ATTRIBUTE Ngram15features	REAL 		%features
+@ATTRIBUTE Ngram16mycoclap	REAL 		%mycoclap
+@ATTRIBUTE Ngram17results	REAL 		%results
+@ATTRIBUTE Ngram18abstracttext	REAL 		%abstracttext
+@ATTRIBUTE Ngram19task	REAL 		%task
+@ATTRIBUTE Ngram20http	REAL 		%http
+@ATTRIBUTE Ngram21support	REAL 		%support
+@ATTRIBUTE Ngram22learning	REAL 		%learning
+@ATTRIBUTE Ngram23database	REAL 		%database
+@ATTRIBUTE Ngram24curation	REAL 		%curation
+@ATTRIBUTE Ngram25logistic	REAL 		%logistic
+@ATTRIBUTE Ngram26applications	REAL 		%applications
+@ATTRIBUTE Ngram27articletitle	REAL 		%articletitle
+@ATTRIBUTE class 	{positive, negative}
+@DATA
+
+25754864,0,0,0,2,0,0,2,5,3,1,1,2,2,0,1,0,6,1,0,0,2,2,0,4,2,0,2,0,negative
+25551575,2,4,3,0,2,2,0,0,0,1,2,0,0,4,1,2,0,1,0,2,0,2,3,0,1,2,0,0,negative
+

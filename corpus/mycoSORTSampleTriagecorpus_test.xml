@@ -1,0 +1,468 @@
+<corpus>
+<PubmedArticle>
+    <MedlineCitation Owner="NLM" Status="In-Process">
+        <PMID Version="1">25754864</PMID>
+        <DateCreated>
+            <Year>2015</Year>
+            <Month>03</Month>
+            <Day>10</Day>
+        </DateCreated>
+        <DateRevised>
+            <Year>2015</Year>
+            <Month>03</Month>
+            <Day>18</Day>
+        </DateRevised>
+        <Article PubModel="Electronic-Print">
+            <Journal>
+                <ISSN IssnType="Electronic">1758-0463</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>2015</Volume>
+                    <PubDate>
+                        <Year>2015</Year>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Database : the journal of biological databases and curation</Title>
+                <ISOAbbreviation>Database (Oxford)</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>mycoCLAP, the database for characterized lignocellulose-active proteins of fungal origin: resource and text mining curation support.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn/>
+            </Pagination>
+            <ELocationID EIdType="doi" ValidYN="Y">10.1093/database/bav008</ELocationID>
+            <ELocationID EIdType="pii" ValidYN="Y">bav008</ELocationID>
+            <Abstract>
+                <AbstractText>Enzymes active on components of lignocellulosic biomass are used for industrial applications ranging from food processing to biofuels production. These include a diverse array of glycoside hydrolases, carbohydrate esterases, polysaccharide lyases and oxidoreductases. Fungi are prolific producers of these enzymes, spurring fungal genome sequencing efforts to identify and catalogue the genes that encode them. To facilitate the functional annotation of these genes, biochemical data on over 800 fungal lignocellulose-degrading enzymes have been collected from the literature and organized into the searchable database, mycoCLAP (http://mycoclap.fungalgenomics.ca). First implemented in 2011, and updated as described here, mycoCLAP is capable of ranking search results according to closest biochemically characterized homologues: this improves the quality of the annotation, and significantly decreases the time required to annotate novel sequences. The database is freely available to the scientific community, as are the open source applications based on natural language processing developed to support the manual curation of mycoCLAP. Database URL: http://mycoclap.fungalgenomics.ca.</AbstractText>
+                <CopyrightInformation>© The Author(s) 2015. Published by Oxford University Press.</CopyrightInformation>
+            </Abstract>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Strasser</LastName>
+                    <ForeName>Kimchi</ForeName>
+                    <Initials>K</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>McDonnell</LastName>
+                    <ForeName>Erin</ForeName>
+                    <Initials>E</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Nyaga</LastName>
+                    <ForeName>Carol</ForeName>
+                    <Initials>C</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Wu</LastName>
+                    <ForeName>Min</ForeName>
+                    <Initials>M</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Wu</LastName>
+                    <ForeName>Sherry</ForeName>
+                    <Initials>S</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Almeida</LastName>
+                    <ForeName>Hayda</ForeName>
+                    <Initials>H</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Meurs</LastName>
+                    <ForeName>Marie-Jean</ForeName>
+                    <Initials>MJ</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Kosseim</LastName>
+                    <ForeName>Leila</ForeName>
+                    <Initials>L</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Powlowski</LastName>
+                    <ForeName>Justin</ForeName>
+                    <Initials>J</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Butler</LastName>
+                    <ForeName>Greg</ForeName>
+                    <Initials>G</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA gregb@encs.concordia.ca.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Tsang</LastName>
+                    <ForeName>Adrian</ForeName>
+                    <Initials>A</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA Centre for Structural and Functional Genomics, Department of Computer Science and Software Engineering, Department of Chemistry and Biochemistry, and Department of Biology Concordia University, Montréal, QC, USA.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType UI="D016428">Journal Article</PublicationType>
+                <PublicationType UI="D013485">Research Support, Non-U.S. Gov't</PublicationType>
+            </PublicationTypeList>
+            <ArticleDate DateType="Electronic">
+                <Year>2015</Year>
+                <Month>03</Month>
+                <Day>08</Day>
+            </ArticleDate>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>England</Country>
+            <MedlineTA>Database (Oxford)</MedlineTA>
+            <NlmUniqueID>101517697</NlmUniqueID>
+            <ISSNLinking>1758-0463</ISSNLinking>
+        </MedlineJournalInfo>
+        <CitationSubset>IM</CitationSubset>
+        <CommentsCorrectionsList>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nat Biotechnol. 2004 Jun;22(6):695-700</RefSource>
+                <PMID Version="1">15122302</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Appl Environ Microbiol. 2013 Aug;79(15):4620-34</RefSource>
+                <PMID Version="1">23709508</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>J Mol Biol. 1990 Oct 5;215(3):403-10</RefSource>
+                <PMID Version="1">2231712</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 2008 Sep 4;455(7209):47-50</RefSource>
+                <PMID Version="1">18769432</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nucleic Acids Res. 2009 Jan;37(Database issue):D233-8</RefSource>
+                <PMID Version="1">18838391</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nucleic Acids Res. 2009 Jan;37(Database issue):D588-92</RefSource>
+                <PMID Version="1">18984617</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Database (Oxford). 2011;2011:bar020</RefSource>
+                <PMID Version="1">21622642</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Genome Res. 2011 Jun;21(6):885-97</RefSource>
+                <PMID Version="1">21543515</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nat Methods. 2011;8(10):785-6</RefSource>
+                <PMID Version="1">21959131</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nat Biotechnol. 2011 Oct;29(10):922-7</RefSource>
+                <PMID Version="1">21964414</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Enzyme Microb Technol. 2011 Apr 7;48(4-5):397-403</RefSource>
+                <PMID Version="1">22112956</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>BMC Med Inform Decis Mak. 2012;12 Suppl 1:S5</RefSource>
+                <PMID Version="1">22595090</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Science. 2012 Jun 29;336(6089):1715-9</RefSource>
+                <PMID Version="1">22745431</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nucleic Acids Res. 2013 Jan;41(Database issue):D43-7</RefSource>
+                <PMID Version="1">23161681</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nucleic Acids Res. 2013 Jan;41(Database issue):D36-42</RefSource>
+                <PMID Version="1">23193287</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nat Genet. 2000 May;25(1):25-9</RefSource>
+                <PMID Version="1">10802651</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>PLoS One. 2014;9(12):e115892</RefSource>
+                <PMID Version="1">25551575</PMID>
+            </CommentsCorrections>
+        </CommentsCorrectionsList>
+        <OtherID Source="NLM">PMC4352688</OtherID>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="ppublish">
+                <Year>2015</Year>
+                <Month/>
+                <Day/>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2015</Year>
+                <Month>3</Month>
+                <Day>11</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2015</Year>
+                <Month>3</Month>
+                <Day>11</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2015</Year>
+                <Month>3</Month>
+                <Day>11</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>epublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pii">bav008</ArticleId>
+            <ArticleId IdType="doi">10.1093/database/bav008</ArticleId>
+            <ArticleId IdType="pubmed">25754864</ArticleId>
+            <ArticleId IdType="pmc">PMC4352688</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+
+<PubmedArticle>
+    <MedlineCitation Owner="NLM" Status="In-Process">
+        <PMID Version="1">25551575</PMID>
+        <DateCreated>
+            <Year>2015</Year>
+            <Month>01</Month>
+            <Day>01</Day>
+        </DateCreated>
+        <DateRevised>
+            <Year>2015</Year>
+            <Month>01</Month>
+            <Day>13</Day>
+        </DateRevised>
+        <Article PubModel="Electronic-eCollection">
+            <Journal>
+                <ISSN IssnType="Electronic">1932-6203</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>9</Volume>
+                    <Issue>12</Issue>
+                    <PubDate>
+                        <Year>2014</Year>
+                    </PubDate>
+                </JournalIssue>
+                <Title>PloS one</Title>
+                <ISOAbbreviation>PLoS ONE</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Machine learning for biomedical literature triage.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>e115892</MedlinePgn>
+            </Pagination>
+            <ELocationID EIdType="doi" ValidYN="Y">10.1371/journal.pone.0115892</ELocationID>
+            <Abstract>
+                <AbstractText>This paper presents a machine learning system for supporting the first task of the biological literature manual curation process, called triage. We compare the performance of various classification models, by experimenting with dataset sampling factors and a set of features, as well as three different machine learning algorithms (Naive Bayes, Support Vector Machine and Logistic Model Trees). The results show that the most fitting model to handle the imbalanced datasets of the triage classification task is obtained by using domain relevant features, an under-sampling technique, and the Logistic Model Trees algorithm.</AbstractText>
+            </Abstract>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Almeida</LastName>
+                    <ForeName>Hayda</ForeName>
+                    <Initials>H</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Computer Science and Software Engineering, Concordia University, Montreal, QC, Canada.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Meurs</LastName>
+                    <ForeName>Marie-Jean</ForeName>
+                    <Initials>MJ</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Concordia University, Montreal, QC, Canada.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Kosseim</LastName>
+                    <ForeName>Leila</ForeName>
+                    <Initials>L</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Computer Science and Software Engineering, Concordia University, Montreal, QC, Canada.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Butler</LastName>
+                    <ForeName>Greg</ForeName>
+                    <Initials>G</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Computer Science and Software Engineering, Concordia University, Montreal, QC, Canada; Centre for Structural and Functional Genomics, Concordia University, Montreal, QC, Canada.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Tsang</LastName>
+                    <ForeName>Adrian</ForeName>
+                    <Initials>A</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Centre for Structural and Functional Genomics, Concordia University, Montreal, QC, Canada.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType UI="D016428">Journal Article</PublicationType>
+                <PublicationType UI="D013485">Research Support, Non-U.S. Gov't</PublicationType>
+            </PublicationTypeList>
+            <ArticleDate DateType="Electronic">
+                <Year>2014</Year>
+                <Month>12</Month>
+                <Day>31</Day>
+            </ArticleDate>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>United States</Country>
+            <MedlineTA>PLoS One</MedlineTA>
+            <NlmUniqueID>101285081</NlmUniqueID>
+            <ISSNLinking>1932-6203</ISSNLinking>
+        </MedlineJournalInfo>
+        <CitationSubset>IM</CitationSubset>
+        <CommentsCorrectionsList>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Proc AMIA Symp. 2001;:17-21</RefSource>
+                <PMID Version="1">11825149</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Artif Intell Med. 2005 Sep-Oct;35(1-2):121-34</RefSource>
+                <PMID Version="1">16024240</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Mol Cell. 2006 Mar 3;21(5):589-94</RefSource>
+                <PMID Version="1">16507357</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Bioinformatics. 2006 Mar 15;22(6):658-64</RefSource>
+                <PMID Version="1">16287934</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Artif Intell Med. 2006 May;37(1):7-18</RefSource>
+                <PMID Version="1">16233974</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Nature. 2008 Sep 4;455(7209):47-50</RefSource>
+                <PMID Version="1">18769432</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>IEEE Trans Syst Man Cybern B Cybern. 2009 Feb;39(1):281-8</RefSource>
+                <PMID Version="1">19068445</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Database (Oxford). 2011;2011:bar020</RefSource>
+                <PMID Version="1">21622642</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>J Integr Bioinform. 2011;8(3):176</RefSource>
+                <PMID Version="1">21926439</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>Database (Oxford). 2012;2012:bas020</RefSource>
+                <PMID Version="1">22513129</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>BMC Med Inform Decis Mak. 2012;12 Suppl 1:S5</RefSource>
+                <PMID Version="1">22595090</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>PLoS One. 2013;8(6):e65848</RefSource>
+                <PMID Version="1">23785456</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>PLoS One. 2013;8(12):e80503</RefSource>
+                <PMID Version="1">24312478</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>PLoS One. 2014;9(4):e91315</RefSource>
+                <PMID Version="1">24705246</PMID>
+            </CommentsCorrections>
+            <CommentsCorrections RefType="Cites">
+                <RefSource>PLoS One. 2014;9(7):e102039</RefSource>
+                <PMID Version="1">25036529</PMID>
+            </CommentsCorrections>
+        </CommentsCorrectionsList>
+        <OtherID Source="NLM">PMC4281078</OtherID>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="ecollection">
+                <Year>2014</Year>
+                <Month/>
+                <Day/>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="received">
+                <Year>2014</Year>
+                <Month>9</Month>
+                <Day>4</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="accepted">
+                <Year>2014</Year>
+                <Month>11</Month>
+                <Day>27</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="epublish">
+                <Year>2014</Year>
+                <Month>12</Month>
+                <Day>31</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2015</Year>
+                <Month>1</Month>
+                <Day>1</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2015</Year>
+                <Month>1</Month>
+                <Day>1</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2015</Year>
+                <Month>1</Month>
+                <Day>1</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>epublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="doi">10.1371/journal.pone.0115892</ArticleId>
+            <ArticleId IdType="pii">PONE-D-14-39858</ArticleId>
+            <ArticleId IdType="pubmed">25551575</ArticleId>
+            <ArticleId IdType="pmc">PMC4281078</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+
+</corpus>

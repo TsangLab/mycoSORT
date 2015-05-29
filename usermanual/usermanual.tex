@@ -1,0 +1,600 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{usefulsymbols}
+\usepackage{hyperref}
+\newcommand{\mycos}{{\bf{mycoSORT{ }}}}
+\newcommand{\homefolder}{\texttt{mycosort-pck-\version{ }}}
+\newcommand{\configfile}{\texttt{config.cfg{ }}}
+\newcommand{\configsample}{\texttt{config-sample.cfg{ }}}
+
+\def\version{{\tt 1.0}}
+\usepackage{listings}
+\usepackage{courier}
+\lstset{basicstyle=\small\ttfamily,breaklines=true,frame=L,xleftmargin=\parindent}
+%\lstset{framextopmargin=50pt,frame=bottomline}
+%\lstset{breaklines=true} 
+%\lstset{breakatwhitespace=true} 
+
+% if you just need a simple heading
+% Usage:
+%   \heading{the text of the heading}
+\newcommand{\heading}[1]{
+    \vspace{0.3cm} \noindent \textbf{#1} \newline
+}
+
+\usepackage{datetime}
+\newdateformat{mydate}{\monthname[\THEMONTH] \THEYEAR}
+
+
+\graphicspath{{./graphics/}}
+
+\begin{document}
+
+\title{\mycos{} ~ \version \\~\\~\\User Manual\\~\\}
+
+\author{Hayda Almeida\\Marie-Jean Meurs\\~\\~\\Tsang Lab}
+
+\date{\mydate\today}
+
+\maketitle
+
+\begin{center}
+	\includegraphics[width=0.2\textwidth]{genomicslogogreen}$\qquad$\includegraphics[width=0.2\textwidth]{genozymeslogo}$\qquad$\includegraphics[width=0.25\textwidth]{concordialogo}\\
+\end{center}
+
+\pagestyle{empty}
+
+\pagebreak
+\tableofcontents
+
+% \pagestyle{empty}
+\pagebreak
+
+\section{Introduction to mycoSORT}
+
+\mycos{} is an open source text classification software program written in Java.
+The software is based on data sampling and machine learning methods.
+\mycos{} was primarily developed to perform text classification of scientific literature related to fungal enzymes.
+However, it can also execute classification of literature related to different topics. 
+This tool can be applied to support scientific researchers in the selection of relevant documents when performing literature review.
+
+\mycos{} utilizes a labeled document collection to learn from, 
+and generate a classification model through supervised learning, 
+which will be used to predict a label for new scientific papers.
+In order to obtain a classification prediction for a given document, 
+\mycos{} must first train or load a classification model.
+
+To generate the classification models, \mycos{} makes use of the standard implementation 
+of classification algorithms provided by the Weka workbench~\cite{hall2009weka}, 
+which is also developed in Java.
+In addition, \mycos{} utilizes the following packages:
+% commons-lang3-3.2.1
+% jsoup-1.7.3
+\begin{itemize}
+ \item Apache Commons Lang\footnote{\url{https://commons.apache.org}}(version 3.2.1 or above), a Java utility package;
+ \item jsoup\footnote{\url{http://jsoup.org/}}(version 1.7.3 or above), a Java HTML/XML parser;
+ \item LIBSVM\footnote{\url{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}}(version 3.2 or above), a wrapper library for the SVM classifier;
+ \item Apache Ant\footnote{\url{http://ant.apache.org/}}(version 1.9.3 or above), a Java library used to build Java applications.
+\end{itemize}
+
+In the following sections, you will find instructions on how to 
+have access to the system source code, install, and run the software tool.
+\mycos{} toolkit is available at \url{https://github.com/TsangLab/mycosort}.
+This user manual describes \mycos{} version {\version}. 
+
+\section{Getting Started}
+\label{sec:start}
+To download \mycos{} toolkit, please access \url{https://github.com/TsangLab/mycosort}. 
+This user manual is written for version \version; 
+and assumes that you have downloaded and extracted the \homefolder{} as a folder, 
+and that this folder is currently in your working directory.
+
+\subsection{Package Content}
+\label{subsec:pckcontent}
+\mycos{} toolkit contains several folders and files in its root folder.
+These items are used to provide inputs and keep outpus for the system subtasks. 
+Their usage and content are further explained here. 
+
+\paragraph{Folders list} 
+\textit{\texttt{arff} $\rightarrow$} contains the .ARFF files representing the data as vector matrices. These files are used to generate the classification models. \\
+\textit{\texttt{corpus} $\rightarrow$} keeps the training and test sets in .XML format, used to build and apply the classification models. \\
+\textit{\texttt{executables} $\rightarrow$} holds the .JAR files that compose the system and are used to perform the system tasks. \\
+\textit{\texttt{features} $\rightarrow$} contains the features extracted from the training sets, saved in .TXT format. \\
+\textit{\texttt{jars} $\rightarrow$} contains the external .JAR packages which are bundled with the system.\\
+\textit{\texttt{src} $\rightarrow$} holds the system .JAVA source files. 
+
+\paragraph{Files list} 
+\textit{\texttt{build.xml} $\rightarrow$} master file used by Apache Ant to build \mycos{} executables. \\
+\textit{\configsample $\rightarrow$} a sample of the configuration file used to set specific parameters for the system different tasks. \\
+\textit{\texttt{entities.txt} $\rightarrow$} a list of bioentities that are found annotated in the dataset. \\
+\textit{\texttt{stopList.txt} $\rightarrow$} a list of stop-words to be considered for feature extraction.
+
+\subsection{Requirements}
+\mycos{} requires Java JDK (version 1.8.0 or above)  and Apache Ant (version 1.9.3 or above) to be installed.\\
+For further information on how to install Java JDK, please refer to: \\ \url{http://www.oracle.com/technetwork/java/javase/downloads/index.html}. \\
+For information on how to install Apache Ant, please refer to: \\ \url{http://ant.apache.org/manual/install.html}.
+
+% \section{Dataset Format}
+% \label{sec:format}
+% 
+% \mycos{} uses the following file formats in its processing:
+% \begin{itemize}
+% 	 \item XML - eXtensible Markup Language - dataset format containing annotated papers 
+% 	 \item TXT - Text File - \mycos{} features extraction format 
+% 	 \item ARFF - Attribute-Relation File Format\footnote{\url{http://cs.waikato.ac.nz/~ml/weka/arff}} - instance and features list format 
+% \end{itemize}
+
+\section{Configuration Setup}
+\label{sec:configuration}
+The general working environment and configurations of \mycos{} are defined in a file named \configfile{}.
+To generate a \configfile{} file, create a copy of \configsample{} and rename it to \configfile{}.
+Before compiling and running \mycos{}, it is required to edit the \configfile{} file.
+
+\subsection{Directory Setting}
+\label{directory}
+To set up the main directory for using \mycos{}, firstly update the \texttt{HOME\_DIR} directory for your own desired folder, as in the following example.
+The \texttt{HOME\_DIR} should contain the path of the system main folder, where the \mycos{} toolkit was extracted.
+\begin{lstlisting}
+HOME_DIR=/home/usr/mycosort-pck-version/
+\end{lstlisting}
+
+The following directories are set by default, and generally should not be changed, 
+since they refer to folder paths inside of your \texttt{HOME\_DIR}.
+The corpus directory contains the dataset .XML files, as well as the training and testing files.
+\begin{lstlisting}
+CORPUS_DIR=corpus/
+\end{lstlisting}
+
+The positive and negative folders contain the positive and negative .XML instances, and are found inside of \texttt{CORPUS\_DIR}.
+\begin{lstlisting}
+POS_DIR=positives/
+NEG_DIR=negatives/
+\end{lstlisting}
+
+The train and test folders will contain the train and test .XML instances, and are found inside of \texttt{CORPUS\_DIR}.
+\begin{lstlisting}
+TRAIN_DIR=train/
+TEST_DIR=test/
+\end{lstlisting}
+
+The arff directory contains the .ARFF files, used to feed the classification algorithms.
+\begin{lstlisting}
+OUTPUT_MODEL=arff/
+\end{lstlisting}
+
+The feature directory contains the .TXT files listing all feature types extracted from the training sets.
+\begin{lstlisting}
+FEATURE_DIR=features/
+\end{lstlisting}
+
+The duplicates directory is a directory in which the user wants to look for duplicates.
+Its value should be edited to fit the folder name, which should be placed inside of \texttt{CORPUS\_DIR}.
+\begin{lstlisting}
+DUP_DIR=test/
+\end{lstlisting}
+
+\subsection{Corpus Sampling Setting}
+\label{subsec:corpussamp}
+Data sampling can be used to split the document collection into training and test collections, 
+as well as to generate several training collections with different class distributions.
+To enable the training or test sampling, set the following variables to true:
+\begin{lstlisting}
+SAMPLE_TRAIN=false
+SAMPLE_TEST=false
+\end{lstlisting}
+The following variables will control the data sampling settings.
+To determine the size of the test set with regards to the entire document collection, use \texttt{PERCT\_TEST} to set the percentage of the test collection.
+\begin{lstlisting}
+PERCT_TEST=15
+\end{lstlisting}
+To generate a training collection, first define the percentage of positive instances to be sampled for this corpus.
+This variable is also used when generating .ARFF files. 
+\begin{lstlisting}
+PERCT_POS_TRAIN=50
+\end{lstlisting}
+To generate a test collection, first determine its the percentage of positive instances.
+\begin{lstlisting}
+PERCT_POS_TEST=10
+\end{lstlisting}
+
+\subsection{File Setting}
+\label{subsec:fileset}
+We describe here the files used as input for \mycos{}.
+The \texttt{TRAINING\_FILE} and \texttt{TEST\_FILE} should contain the name of the XML files generated as training and test sets.
+The training file is used by the extractors to extract features, and to build the .ARFF files.
+\begin{lstlisting}
+TRAINING_FILE=triage0.xml
+TEST_FILE=triage1.xml
+\end{lstlisting}
+
+The .ARFF files are used to feed the classification models. 
+When wanting to re-train a model, \texttt{ARFF\_TRAIN} should contain the .ARFF file name used for training.
+When wanting to test new instances, \texttt{ARFF\_TEST} should contain the .ARFF file name used for testing.
+\begin{lstlisting}
+ARFF_TRAIN=triage0.arff
+ARFF_TEST=triage1.arff
+\end{lstlisting}
+
+The stopwords list used by the extractors is defined here.
+We recommend to keep this variable as it is defined in the \configsample.
+\begin{lstlisting}
+STOP_LIST=stopList.txt
+\end{lstlisting}
+
+When executing subtasks, \mycos{} produces the following files as output, 
+which are later on used as input for new subtasks.
+These files contain the features extracted from a given training set.
+\begin{lstlisting}
+ECNUM_FEATURES=ecnumbers.txt
+JOURNAL_TITLE_FEATURES=journaltitles.txt
+ANNOTATION_FEATURES=annotations.txt
+TITLE_FEATURES=titleAnnotations.txt
+NGRAM_FEATURES=ngrams_features.txt
+TITLE_NGRAMS=titleGrams.txt
+DOC_IDS=docIDs.txt
+\end{lstlisting}
+
+\subsection{Feature Setting}
+\label{subsec:featureset}
+The feature configuration is taken into account when generating .ARFF files.
+In order to choose a feature type to be used when creating an .ARFF file, simply set its value to ``true'', as the examples below. \\
+\paragraph{General features}
+More than one feature can be combined when generating .ARFF files.
+The following variables will load general features: the size of a paper abstract, 
+the name of the publication journal, and the EC numbers found in a paper.
+\begin{lstlisting} 
+USE_TEXT_SIZE=true
+USE_JOURNAL_TITLE_FEATURE=true
+USE_ECNUM_FEATURE=true
+\end{lstlisting}
+
+The \texttt{USE\_DOC\_ID} variable extracts the paper PMID.
+This variable must be maintained with its value set to ``true'', 
+since it is needed to output the classification predictions according to the document ID.
+\begin{lstlisting}
+USE_DOC_ID=true
+\end{lstlisting}
+
+The following variables set specific conditions for feature frequency (number of times it was found in the training set)
+and feature lenght (number of characters in a feature) to be taking into account when extracting the feature list.
+The default parameters are defined below, but they can be adjusted according to the user needs.
+\begin{lstlisting}
+FEATURE_MIN_FREQ=2
+FEATURE_MIN_LENGTH=3
+\end{lstlisting}
+
+\paragraph{Annotation features}
+The following variables will provide annotation features to generate .ARFF files.
+To load the bioentity annotations extracted from the training set, the value of \texttt{USE\_ANNOTATION\_FEATURE} must be set to true.
+When setting \texttt{USE\_ANNOTATION\_TYPE} to true, the bioentity types will be loaded to generate .ARFFs.
+Finally, when setting \texttt{USE\_TITLE\_FEATURE} to true, the bioentities annotated in paper titles will be 
+considered separately from the annotations found in abstracts.
+\begin{lstlisting}
+USE_ANNOTATION_FEATURE=true
+USE_ANNOTATION_TYPE=true
+USE_TITLE_FEATURE=true
+\end{lstlisting}
+
+\paragraph{N-Gram features}
+The following variables will provide n-gram features to generate .ARFF files.
+To load the n-grams extracted from the training set, the value of \texttt{USE\_NGRAM\_FEATURE} must be set to true.
+When setting \texttt{USE\_TITLE\_NGRAMS} to true, the n-grams found in paper titles will be 
+considered separately from the n-grams found in abstracts.
+Use \texttt{NGRAM\_STOP} to remove stopwords from the feature list.
+\begin{lstlisting}
+USE_NGRAM_FEATURE=true
+USE_TITLE_NGRAMS=false
+NGRAM_STOP=true
+\end{lstlisting}
+The variable \texttt{NGRAM\_SIZE} determines the number of words used to
+form n-grams. The default value is 1, however the system is also capable of generating 
+bigrams (\texttt{NGRAM\_SIZE=2}) and trigrams (\texttt{NGRAM\_SIZE=3}). 
+\begin{lstlisting}
+NGRAM_SIZE=1
+\end{lstlisting}
+
+To apply a weight in a n-gram, set the following variable to true and
+determine the value of the weight.
+This configuration will simply multiply the current n-gram frequency by the value provided in \texttt{WEIGHT}.
+\begin{lstlisting}
+USE_WEIGHTED_NGRAM=false
+WEIGHT=3
+\end{lstlisting}
+
+\subsection{Feature Selection Setting}
+\label{subsec:featselec}
+The feature selection configuration is taken into account before feeding .ARFF files to the classification algorithms.
+To enable Odds Ratio (OR) or IDF filtering, just set one of the following variables to true:
+\begin{lstlisting}
+USE_ODDS_RATIO=true
+USE_IDF=false
+\end{lstlisting}
+It is recommended to apply Odds Ratio or IDF, but not both together.
+To determine the minimum threshold considered to keep a feature, adjust the following variables (default is set to 1):
+\begin{lstlisting}
+OR_THRESHOLD=1
+IDF_THRESHOLD=1
+\end{lstlisting}
+
+\subsection{Experiment}
+The experiment type is used to generate .XML and .ARFF files. 
+To generate training files, set \texttt{EXP\_TYPE=0}, and to generate test files, set \texttt{EXP\_TYPE=1}.
+\begin{lstlisting}
+EXP_TYPE=0
+\end{lstlisting}
+
+% 
+% \subsubsection{N-Grams}
+% \label{ngrams}
+% To determine the size of N-Grams features, please set the number of \texttt{NGRAM\_SIZE} variable on the file to \texttt{1}, \texttt{2} or \texttt{3}.
+% In order to have a single relation of all the N-Grams from both paper abstract and title, the features should be configured as the following:
+% \begin{lstlisting}
+% USE_NGRAM_FEATURE=true
+% USE_TITLE_NGRAMS=false
+% \end{lstlisting}
+% If you require the title N-Grams as separated features from the abstract N-Grams, please define its value also as \texttt{true}.
+% 
+% Yet, if you require that N-Grams from the paper abstract should not be considered and only the title text must be taken into account, use the following configuration:
+% \begin{lstlisting}
+% USE_NGRAM_FEATURE=false
+% USE_TITLE_NGRAMS=true
+% \end{lstlisting}
+% 
+% \subsubsection{Annotations}
+% \label{annotations}
+% The same configuration set for abstract and title is valid for the annotations. To have a single relation from both paper abstract and title, use:
+% \begin{lstlisting}
+% USE_ANNOTATION_FEATURE=true
+% USE_TITLE_FEATURE=false
+% \end{lstlisting}
+% If separated lists of annotation features from abstract and title are needed, please define both values as \texttt{true}.
+% 
+% However, if you wish to have only the annotations found on the paper title, but not on the paper abstract, just apply the variables value as the following:
+% \begin{lstlisting}
+% USE_ANNOTATION_FEATURE=false
+% USE_TITLE_FEATURE=true
+% \end{lstlisting} 
+
+
+\section{Using \mycos{}}
+\mycos{} can be used from a command line interface. 
+The system utilizes Apache Ant to build the five different modules (.JAR files), 
+which are available in the \texttt{executables} folder.
+To execute \mycos{} modules, it is necessary to access the system home folder.
+In a command line interface (a terminal in Linux OS, or a prompt in Microsoft Windows), 
+navigate until the \homefolder{} folder, such as:
+
+\begin{lstlisting}
+ user@machine $ cd /home/usr/mycosort-pck-version 
+\end{lstlisting}
+
+On a Microsoft Windows system, the forward slashes should be replaced by back slashes
+(e.g. \texttt{home\textbackslash usr\textbackslash ...}). 
+From now on, the instructions will assume that a Linux OS is being used.
+
+\paragraph{Compiling} 
+After accessing the system home folder, it is necessary to first compile \mycos{} modules.
+To do so, simply type \texttt{"ant"} in the command line, as the example below:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+\end{lstlisting}
+The system should be re-compiled if any parameter is changed or edited in the \configfile file.
+Following we describe the usage and configuration for each of the five \mycos{} modules:
+\begin{itemize}
+\item SampleCorpus
+\item CorpusHandler
+\item FeatureExtractor
+\item NgramExtractor
+\item BuildModel
+\item Trainer
+\end{itemize}
+
+
+\subsection{SampleCorpus} 
+The \texttt{SampleCorpus} module allows the user to generate training and test collections. 
+It utilizes all .XML documents contained in the \texttt{corpus/positive} and \texttt{corpus/negative} folders.
+\paragraph{Example 1}
+When generating the test collection, the .XML instances randomly selected will be moved 
+from the \texttt{corpus/positive} and \texttt{corpus/negative} folders to the 
+\texttt{corpus/test} folder.
+To execute the test sampling and generate a test collection that represents
+15\% of the entire document collection, and that contains 10\% of positive instances, 
+edit the following variables in the \configfile:
+\begin{lstlisting}
+SAMPLE_TEST=true
+PERCT_TEST=15
+PERCT_POS_TEST=10
+\end{lstlisting}
+
+\paragraph{Example 2}
+When generating the training collection, the .XML instances randomly selected will be 
+copied from \texttt{corpus/positive} and \texttt{corpus/negative} folders to the 
+\texttt{corpus/train\_ (PERCT\_POS\_TRAIN)} folder.
+To execute the training sampling and generate a trainng collection that contains
+50\% of negative instances and 50\% of positive instances,
+edit the following variables in the \configfile:
+\begin{lstlisting}
+SAMPLE_TRAIN=true
+PERCT_POS_TRAIN=50
+\end{lstlisting}
+
+To execute \texttt{SampleCorpus}, run the following instruction in the command line interface:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+user@home/usr/mycosort-pck-version $ ant sample-corpus
+\end{lstlisting}
+After running the instruction, the selected sampling (training or test) will be executed.
+The training collection will then be copied to a \texttt{corpus/train\_50} folder.
+The training collection can be generated multiple times, with different class distributions.
+
+\subsection{CorpusHandler}
+The \texttt{CorpusHandler} module is used to create the training and test corpus,
+by generating a combined .XML file containing all .XML instances either in the 
+\texttt{corpus/test} folder or in the \texttt{corpus/train\_(PERCT\_POS\_TRAIN)} folder.
+\paragraph{Example 3}
+Besides generating the training and test corpora, this module can also perform a check for duplicates.
+To check for duplicates between an existing training file 
+and a given \texttt{DUP\_DIR} folder containing several .XML files, 
+edit the following variables in the \configfile file:
+\begin{lstlisting}
+TRAINING_FILE=triage0.xml
+DUP_DIR=test/
+\end{lstlisting}
+To execute \texttt{CorpusHandler} and check for duplicates between training file and a given folder,
+run the following instruction in the command line interface:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+user@home/usr/mycosort-pck-version $ ant -Doptions=df corpus-handler
+\end{lstlisting}
+\paragraph{Example 4}
+To check for duplicates between the train or test folders containing all .XMLs and 
+a given \texttt{DUP\_DIR} folder containing other several .XML files, 
+edit the following variables in the \configfile file:
+\begin{lstlisting}
+DUP_DIR=test/
+EXP_TYPE=0
+\end{lstlisting}
+In this case, \texttt{EXP\_TYPE=0} if the train .XMLs must be considered, 
+or \texttt{EXP\_TYPE=1} if the test .XMLs must be considered.
+To execute \texttt{CorpusHandler} and check for duplicates between training file and a given folder,
+run the following instruction in the command line interface:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+user@home/usr/mycosort-pck-version $ ant -Doptions=dc corpus-handler
+\end{lstlisting}
+When checking for duplicates, the duplicates found will by default renamed only in the \texttt{DUP\_DIR} folder. \\
+
+\paragraph{Example 5}
+To generate a training corpus, the following variables must be edited in the \configfile file:
+\begin{lstlisting}
+PERCT_POS_TRAIN=50
+EXP_TYPE=0
+\end{lstlisting}
+To generate a testing corpus, edit the following variables:
+\begin{lstlisting}
+PERCT_POS_TEST=10
+EXP_TYPE=1
+\end{lstlisting}
+In order to generate the corpora, it is first required to clean (\texttt{-Doptions=cl}), 
+and only then concatenate (\texttt{-Doptions=cc}) all .XMLs in a given folder.
+Thus, when creating the training or test corpora, 
+run the following instruction in the command line interface:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+user@home/usr/mycosort-pck-version $ ant -Doptions=cl,cc corpus-handler
+\end{lstlisting}
+
+\subsection{NgramExtractor}
+The \texttt{NgramExtractor} is a feature extraction module, used to extract n-grams 
+(small units of text) from the paper article title and abstract.
+N-grams can be generated in three different sizes: unigrams (one word), bigrams (two words), and trigrams (three words).
+The default ngram size is one word, since this extraction already results in long list of features.
+It is also recommended to discard stopwords when extracting n-grams, 
+and this can be set by keeping the value of \texttt{NGRAM\_STOP} as \texttt{true}.
+\paragraph{Example 6}
+To perform the ngram extraction, the following variables must be edited in the \configfile file:
+\begin{lstlisting}
+TRAINING_FILE=triage0.xml
+NGRAM_STOP=true
+NGRAM_SIZE=1
+FEATURE_MIN_FREQ=2
+FEATURE_MIN_LENGTH=3
+\end{lstlisting}
+To execute \texttt{NgramExtractor} run the following instruction in the command line interface:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+user@home/usr/mycosort-pck-version $ ant ngram-extractor
+\end{lstlisting}
+
+\subsection{FeatureExtractor}
+The \texttt{FeatureExtractor} is a feature extraction module, used to extract domain annotations 
+(specific XML tags) from the paper article title and abstract.
+To specify the list of annotations (tags) to be considered in the \texttt{FeatureExtractor} module,
+please refer to the \texttt{entities.txt} file in the root of \homefolder folder.
+In order to consider new annotation type (tag) beside the ones provided in the file, 
+simply add a new line containing the annotation type name and its level (sentence or entity).
+Should a given type not be considered, simply add a \# at the beggining of the specific line.
+
+\paragraph{Example 7}
+To perform the feature extraction, the following variables must be edited in the \configfile file:
+\begin{lstlisting}
+TRAINING_FILE=triage0.xml
+FEATURE_MIN_FREQ=2
+FEATURE_MIN_LENGTH=3
+\end{lstlisting}
+To execute \texttt{FeatureExtractor} run the following instruction in the command line interface:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+user@home/usr/mycosort-pck-version $ ant feature-extractor
+\end{lstlisting}
+
+
+\subsection{BuildModel}
+The \texttt{BuildModel} is the module used to represent the training and test sets as
+matrix of document vectors, that will be later fed to a classification algorithm.
+Models are saved in the .ARFF file format, and can be generated with several different configurations of features.
+All generated models are saved in the \texttt{arff} folder.
+
+\paragraph{Example 8} 
+To determine the feature configuration used in a given model, 
+the chosen options, as described in~\ref{subsec:featureset}, 
+must be set to \texttt{true} in the \configfile file.
+As an example, if the user wants to generate a model based only in unigram features,
+the setup of n-gram features must be set to true, as described in~\ref{subsec:featureset},
+while the annotation features setup must be set to false.
+
+In addition, the following variables must also be edited, 
+to indicate if the model should be generated based on the training set or the test set,
+as well as to indicate which percentage of positives was currently considered in the training set.
+\begin{lstlisting}
+PERCT_POS_TRAIN=50
+EXP_TYPE=1
+\end{lstlisting}
+
+To execute \texttt{BuildModel}, run the following instruction in the command line interface:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+user@home/usr/mycosort-pck-version $ ant build-model
+\end{lstlisting}
+
+\subsection{Trainer}
+The \texttt{Trainer} module processes the training .ARFF files and utilizes a classification algorithm to
+generalize a function, and output predictions for instances in the test .ARFF files.
+The corresponding training and test .ARFF files must be indicated 
+in the \configfile file before executing the \texttt{Trainer} module.
+In order to specify the correct files, please refer to these two items:
+\begin{lstlisting}
+ARFF_TRAIN=triage0.arff
+ARFF_TEST=triage1.arff
+\end{lstlisting}
+
+While training and testing the models, feature selection methods can also be set up.
+To perform IDF or Odds Ratio filtering, please refer to the items described in~\ref{subsec:featselec}.
+It is recommended to perform one of the filterings at once, either IDF or Odds Ratio,
+as opposed to both at the same execution.
+
+\paragraph{Example 9}
+A model can be trained using three different classification algorithms: 
+{Na\"{\i}ve} Bayes (\texttt{-Dclassifier=nb}), Support Vector Machine (\texttt{-Dclassifier=svm}), or Logistic Model Tree (\texttt{-Dclassifier=lmt}).
+
+To execute \texttt{Trainer} using LMT, run the following instruction in the command line interface:
+\begin{lstlisting}
+user@home/usr/mycosort-pck-version $ ant
+user@home/usr/mycosort-pck-version $ ant -Dclassifier=lmt trainer
+\end{lstlisting}
+
+
+\section{Contacts}
+Should you have any questions, comments or bug reports, the authors can be reached at the following addresses:\\
+\url{hayda.almeida@concordia.ca} \\
+\url{marie-jean.meurs@concordia.ca}
+
+
+\appendix
+
+
+\bibliographystyle{acm}
+% \renewcommand{\baselinestretch}{0.0}
+\bibliography{usermanual}
+
+\end{document}

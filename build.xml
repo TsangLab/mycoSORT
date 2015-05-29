@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mycoSORTtriage.makejar" basedir="." default="makejar">	
+	<path id="build.classpath">
+	    <fileset dir="jars">
+	        <include name="*.jar"/>
+	    </fileset>			
+	</path>	
+	<manifestclasspath property="jar.classpath" jarfile="executables/*.jar">
+	    <classpath refid="build.classpath"/>
+	</manifestclasspath>
+	<target name="clean">
+		<delete dir="bin" />
+		<mkdir dir="bin" />
+	</target>	
+	
+	<target name="copy">
+		<copy todir="bin" includeemptydirs="false">
+			<fileset dir="." includes="*.cfg, *.txt" />			
+		</copy>
+	</target>		
+		
+	<target name="compile" depends="clean,copy">
+		<javac srcdir="src" destdir="bin" debug="true"
+			includes="analyse/**, arffmatrix/**, 
+				arffvector/**, classifier/**, 
+				configure/**, filter/**, preprocessing/**" 
+			classpathref="build.classpath" 
+		/>
+	</target>		
+	
+	<target name ="makejar" depends="compile" description="Create jars for the mycoSORT Triage project.">				
+    <jar destfile="executables/CorpusHandler.jar">    	
+    	<fileset dir="bin/">
+			<include name="preprocessing/CorpusHandler*.class"/>	
+			<include name="configure/ConfigConstants.class"/>
+    		<include name="config.cfg"/>
+		</fileset>      	 
+    	      	
+    	<manifest>
+			<attribute name="Main-Class" value="preprocessing.CorpusHandler"/>
+    		<attribute name="Class-Path" value="${jar.classpath}"/>
+    	</manifest>    	
+     </jar>
+	 <jar destfile="executables/SampleCorpus.jar">    	
+	 	<fileset dir="bin/">
+			<include name="preprocessing/SampleCorpus*.class"/>	
+			<include name="configure/ConfigConstants.class"/>
+	   		<include name="config.cfg"/>
+		</fileset>      	 
+		<manifest>
+			<attribute name="Main-Class" value="preprocessing.SampleCorpus"/>
+			<attribute name="Class-Path" value="${jar.classpath}"/>
+		</manifest>    	
+	  </jar>	 
+ 	   <jar destfile="executables/NgramExtractor.jar">    	
+	 	<fileset dir="bin/">
+			<include name="analyse/Extractor.class"/>
+			<include name="analyse/NgramExtractor.class"/>
+			<include name="filter/NaiveFilter.class"/>
+			<include name="configure/ConfigConstants.class"/>
+	   		<include name="config.cfg"/>
+			<include name="stopList.txt"/>
+		</fileset>      	 
+		<manifest>
+			<attribute name="Main-Class" value="analyse.NgramExtractor"/>
+			<attribute name="Class-Path" value="${jar.classpath}"/>
+		</manifest>    	
+	   </jar>
+  	   <jar destfile="executables/FeatureExtractor.jar">    	
+	 	<fileset dir="bin/">
+			<include name="analyse/Extractor.class"/>
+			<include name="analyse/FeatureExtractor.class"/>	
+			<include name="filter/NaiveFilter.class"/>		
+			<include name="configure/ConfigConstants.class"/>
+	   		<include name="config.cfg"/>
+			<include name="stopList.txt"/>
+		</fileset>      	 
+		<manifest>
+			<attribute name="Main-Class" value="analyse.FeatureExtractor"/>
+			<attribute name="Class-Path" value="${jar.classpath}"/>
+		</manifest>    	
+	   </jar>	 
+	   <jar destfile="executables/BuildModel.jar">    	
+	 	<fileset dir="bin/">
+			<include name="arffmatrix/BuildModel.class"/>
+			<include name="arffvector/CreateVector.class"/>	
+			<include name="analyse/Extractor.class"/>						
+			<include name="configure/ConfigConstants.class"/>
+	   		<include name="config.cfg"/>			
+		</fileset>      	 
+		<manifest>
+			<attribute name="Main-Class" value="arffmatrix.BuildModel"/>
+			<attribute name="Class-Path" value="${jar.classpath}"/>
+		</manifest>    	
+	   </jar>	
+	    <jar destfile="executables/Trainer.jar">    	
+	 	<fileset dir="bin/">
+			<include name="classifier/Trainer.class"/>
+	 		<include name="filter/InformedFilter.class"/>
+			<include name="configure/ConfigConstants.class"/>
+	   		<include name="config.cfg"/>			
+		</fileset>      	 
+		<manifest>
+			<attribute name="Main-Class" value="classifier.Trainer"/>
+			<attribute name="Class-Path" value="${jar.classpath}"/>
+		</manifest>    	
+	   </jar>    			
+  	</target>
+	<target name="corpus-handler">
+		<java fork="true" classname="preprocessing/CorpusHandler">
+			<classpath>
+				<path location="executables/CorpusHandler.jar"/>
+			</classpath>			
+			<arg value="${options}"/>			
+		</java>		
+	</target>	
+	<target name="sample-corpus">
+		<java fork="true" classname="preprocessing/SampleCorpus">
+		<classpath>
+			<path location="executables/SampleCorpus.jar"/>
+		</classpath>					
+		</java>		
+	</target>
+	<target name="ngram-extractor">
+		<java fork="true" classname="analyse/NgramExtractor">
+		<classpath>
+			<path location="executables/NgramExtractor.jar"/>
+		</classpath>					
+		</java>		
+	</target>
+	<target name="annotation-extractor">
+		<java fork="true" classname="analyse/FeatureExtractor">
+		<classpath>
+			<path location="executables/FeatureExtractor.jar"/>
+		</classpath>					
+		</java>		
+	</target>
+	<target name="build-model">
+		<java fork="true" classname="arffmatrix/BuildModel">
+		<classpath>
+			<path location="executables/BuildModel.jar"/>
+		</classpath>					
+		</java>		
+	</target>
+	<target name="trainer">
+		<java fork="true" classname="classifier/Trainer">
+		<classpath>
+			<path location="executables/Trainer.jar"/>	
+		</classpath>		
+		<arg value="${classifier}"/>			
+		</java>		
+	</target>
+</project>

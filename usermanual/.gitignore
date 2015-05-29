@@ -1,0 +1,12 @@
+# User manual files #
+###################
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.backup
+*.toc
+*.*~
+
+
